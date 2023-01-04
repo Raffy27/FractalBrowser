@@ -13,7 +13,9 @@ public class FractalForm {
     private JSlider sldIterations;
 
     public FractalForm() {
-        panelFractal.setController(new MandelbrotFractal());
+        FractalController controller = new MandelbrotFractal();
+        controller.setIterations(sldIterations.getValue());
+        panelFractal.setController(controller);
         cbxFractalType.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent itemEvent) {
