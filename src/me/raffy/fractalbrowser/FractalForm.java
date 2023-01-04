@@ -1,16 +1,16 @@
 package me.raffy.fractalbrowser;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.*;
 
 public class FractalForm {
     private FractalPreview panelFractal;
     private JPanel panelMain;
     private JButton btnPaint;
     private JComboBox cbxFractalType;
+    private JSlider sldIterations;
 
     public FractalForm() {
         panelFractal.setController(new MandelbrotFractal());
@@ -37,7 +37,14 @@ public class FractalForm {
         btnPaint.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                System.out.println("Button clicked");
+                panelFractal.repaint();
+            }
+        });
+        sldIterations.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent changeEvent) {
+                int value = sldIterations.getValue();
+                panelFractal.getController().setIterations(value);
                 panelFractal.repaint();
             }
         });

@@ -10,10 +10,26 @@ public class MandelbrotFractal extends FractalController {
 
     private Complex c = new Complex(0, 0);
     public void paint(Graphics g) {
-        System.out.println("Painting Mandelbrot");
-        c = c.add(new Complex(-1, 1));
-        String str = c.toString();
-        g.drawString(str, 20, 30);
+        //System.out.println("Painting Mandelbrot");
+
+        Rectangle bounds = g.getClipBounds();
+        double reStep = (MAX_RE - MIN_RE) / bounds.width;
+        double imStep = (MAX_IM - MIN_IM) / bounds.height;
+        for (double re = MIN_RE; re < MAX_RE; re += reStep) {
+            for (double im = MIN_IM; im < MAX_IM; im += imStep) {
+                boolean verdict = diverges(im, re, this.getIterations());
+                int x = (int) ((re - MIN_RE) / reStep);
+                int y = (int) ((im - MIN_IM) / imStep);
+                if (verdict) {
+                    drawPixel(g, x, y, Color.BLACK);
+                }
+            }
+        }
+    }
+
+    private void drawPixel(Graphics g, int x, int y, Color color) {
+        g.setColor(color);
+        g.drawLine(x, y, x, y);
     }
 
     private boolean diverges(double im, double re, int iterations) {
