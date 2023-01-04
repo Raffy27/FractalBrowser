@@ -8,9 +8,16 @@ public class FractalPreview extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        if (this.controller != null) {
-            this.controller.paint(g);
+        // Only process full repaints.
+        // If this is not a full repaint, i.e., a menu was just closed, and we need to repaint the area below it,
+        // then force a full repaint to lift the burden of responsiveness off of the Controller.
+        if (g.getClipBounds().equals(this.getBounds())) {
+            super.paintComponent(g);
+            if (this.controller != null) {
+                this.controller.paint(g);
+            }
+        } else {
+            this.repaint();
         }
     }
 

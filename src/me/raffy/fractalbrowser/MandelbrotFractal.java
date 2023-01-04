@@ -7,6 +7,7 @@ public class MandelbrotFractal extends FractalController {
 
     private static final double CONVERGENCE_RADIUS = 2;
     private static final double MIN_RE = -2, MAX_RE = 1, MIN_IM = -1, MAX_IM = 1;
+    private static final int HUE_RANGE = 200;
 
     public void paint(Graphics g) {
         //System.out.println("Painting Mandelbrot");
@@ -22,8 +23,9 @@ public class MandelbrotFractal extends FractalController {
                 if (result == this.getIterations()) {
                     drawPixel(g, x, y, Color.BLACK);
                 } else {
-                    int hue = result * 200 / this.getIterations();
-                    Color color = Color.getHSBColor(hue / 359f, 1f, .8f);
+                    // TODO: implement hue shift
+                    int hue = result * HUE_RANGE / this.getIterations();
+                    Color color = Color.getHSBColor(hue / 360f, 1f, .8f);
                     drawPixel(g, x, y, color);
                 }
             }
