@@ -33,7 +33,7 @@ public class FractalForm {
                             break;
                         case 2:
                             System.out.println("Sierpinski selected");
-                            setupSierpinksi();
+                            setupSierpinski();
                             panelFractal.repaint();
                             break;
                     }
@@ -64,29 +64,46 @@ public class FractalForm {
         });
     }
 
+    private void setupCommonValues(FractalController controller) {
+        controller.setIterations(sldIterations.getValue());
+    }
     private void setupMandelbrot() {
         FractalController controller = new MandelbrotFractal();
-        controller.setIterations(sldIterations.getValue());
+        setupCommonValues(controller);
         panelFractal.setController(controller);
     }
-
     private void setupTree() {
         FractalController controller = new TreeFractal();
-        controller.setIterations(sldIterations.getValue());
+        setupCommonValues(controller);
         panelFractal.setController(controller);
     }
-
-    private void setupSierpinksi() {
-
+    private void setupSierpinski() {
+        FractalController controller = new SierpinskiFractal();
+        setupCommonValues(controller);
+        panelFractal.setController(controller);
     }
 
     private JMenuBar createTopMenu() {
         JMenuBar menuBar = new JMenuBar();
+
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic('F');
         menuBar.add(fileMenu);
-        JMenuItem exportItem = new JMenuItem("Export", 'E');
+        JMenuItem exportItem = new JMenuItem("Export Image", 'E');
         fileMenu.add(exportItem);
+        fileMenu.add(new JSeparator());
+        JMenuItem exitItem = new JMenuItem("Exit");
+        fileMenu.add(exitItem);
+
+        JMenu helpMenu = new JMenu("Help");
+        helpMenu.setMnemonic('H');
+        menuBar.add(helpMenu);
+        JMenuItem howToUseItem = new JMenuItem("How to use");
+        helpMenu.add(howToUseItem);
+        JMenuItem fractalsItem = new JMenuItem("More about fractals");
+        helpMenu.add(fractalsItem);
+        JMenuItem aboutItem =  new JMenuItem("About");
+        helpMenu.add(aboutItem);
 
         return menuBar;
     }
