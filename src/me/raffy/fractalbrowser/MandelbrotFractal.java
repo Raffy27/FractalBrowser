@@ -52,8 +52,7 @@ public class MandelbrotFractal extends FractalController {
                 if (result == this.getIterations()) {
                     drawPixel(g, x, y, Color.BLACK);
                 } else {
-                    // TODO: implement hue shift
-                    int hue = result * HUE_RANGE / this.getIterations();
+                    int hue = (result * HUE_RANGE / this.getIterations() + getHueShift()) % 360;
                     Color color = Color.getHSBColor(hue / 360f, 1f, .8f);
                     drawPixel(g, x, y, color);
                 }
