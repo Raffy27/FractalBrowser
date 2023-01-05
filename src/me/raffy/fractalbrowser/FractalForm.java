@@ -17,6 +17,8 @@ public class FractalForm {
     private JComboBox cbxFractalType;
     private JSlider sldIterations;
     private JSlider sldHue;
+    private Point dragStart;
+    private boolean mouseDown;
 
     public FractalForm() {
         setupMandelbrot();
@@ -75,6 +77,34 @@ public class FractalForm {
                     fractal.zoom(mouseWheelEvent.getWheelRotation(), mouseWheelEvent.getPoint());
                     panelFractal.repaint();
                 }
+            }
+        });
+        panelFractal.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent mouseEvent) {
+                super.mouseDragged(mouseEvent);
+                if (mouseDown && cbxFractalType.getSelectedIndex() == 0) {
+                    MandelbrotFractal fractal = (MandelbrotFractal) panelFractal.getController();
+                    fractal.pan(dragStart, mouseEvent.getPoint());
+                    dragStart = mouseEvent.getPoint();
+                    panelFractal.repaint();
+                }
+            }
+        });
+        panelFractal.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent mouseEvent) {
+                super.mousePressed(mouseEvent);
+                dragStart = mouseEvent.getPoint();
+                mouseDown = true;
+                panelFractal.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent mouseEvent) {
+                super.mouseReleased(mouseEvent);
+                mouseDown = false;
+                panelFractal.setCursor(Cursor.getDefaultCursor());
             }
         });
     }

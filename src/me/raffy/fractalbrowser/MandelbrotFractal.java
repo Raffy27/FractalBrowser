@@ -38,6 +38,25 @@ public class MandelbrotFractal extends FractalController {
         }
     }
 
+    public void pan(Point start, Point end) {
+        if (bounds != null) {
+            Complex c1 = new Complex(
+                    ((double) start.y / bounds.height) * dimensions.height + dimensions.y,
+                    ((double) start.x / bounds.width) * dimensions.width + dimensions.x
+            );
+            Complex c2 = new Complex(
+                    ((double) end.y / bounds.height) * dimensions.height + dimensions.y,
+                    ((double) end.x / bounds.width) * dimensions.width + dimensions.x
+            );
+            dimensions = new Rectangle2D.Double(
+                    dimensions.x - c2.getRe() + c1.getRe(),
+                    dimensions.y - c2.getIm() + c1.getIm(),
+                    dimensions.width,
+                    dimensions.height
+            );
+        }
+    }
+
     public void paint(Graphics g) {
         //System.out.println("Painting Mandelbrot");
 
