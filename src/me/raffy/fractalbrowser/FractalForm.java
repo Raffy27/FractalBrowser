@@ -1,9 +1,14 @@
 package me.raffy.fractalbrowser;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URI;
 
 public class FractalForm {
     private FractalPreview panelFractal;
@@ -97,26 +102,73 @@ public class FractalForm {
         panelFractal.setController(controller);
     }
 
-    private JMenuBar createTopMenu() {
+    private JMenuBar createTopMenu(final JFrame frame) {
         JMenuBar menuBar = new JMenuBar();
 
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic('F');
         menuBar.add(fileMenu);
         JMenuItem exportItem = new JMenuItem("Export Image", 'E');
+        exportItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                JFileChooser fileChooser = new JFileChooser();
+                int option = fileChooser.showSaveDialog(frame);
+                if (option == JFileChooser.APPROVE_OPTION) {
+                    BufferedImage image = new BufferedImage(panelFractal.getWidth(), panelFractal.getHeight(), BufferedImage.TYPE_INT_RGB);
+                    Graphics2D graphics = image.createGraphics();
+                    panelFractal.paintAll(graphics);
+                    try {
+                        if (ImageIO.write(image, "png", fileChooser.getSelectedFile())) {
+                            JOptionPane.showMessageDialog(null, "Image exported successfully!");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Failed to write image!");
+                    }
+                }
+            }
+        });
         fileMenu.add(exportItem);
         fileMenu.add(new JSeparator());
         JMenuItem exitItem = new JMenuItem("Exit");
+        exitItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                System.exit(0);
+            }
+        });
         fileMenu.add(exitItem);
 
         JMenu helpMenu = new JMenu("Help");
         helpMenu.setMnemonic('H');
         menuBar.add(helpMenu);
         JMenuItem howToUseItem = new JMenuItem("How to use");
+        howToUseItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                JOptionPane.showMessageDialog(null, "You're a smart boi, figure it out");
+            }
+        });
         helpMenu.add(howToUseItem);
         JMenuItem fractalsItem = new JMenuItem("More about fractals");
+        fractalsItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    Desktop desktop = Desktop.getDesktop();
+                    desktop.browse(new URI("https://mathigon.org/course/fractals/introduction"));
+                } catch (Exception ignored) {}
+            }
+        });
         helpMenu.add(fractalsItem);
         JMenuItem aboutItem =  new JMenuItem("About");
+        aboutItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                JOptionPane.showMessageDialog(null, "Made with ♡ by Raffy");
+            }
+        });
         helpMenu.add(aboutItem);
 
         return menuBar;
@@ -127,7 +179,7 @@ public class FractalForm {
         FractalForm form = new FractalForm();
         frame.setContentPane(form.panelMain);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setJMenuBar(form.createTopMenu());
+        frame.setJMenuBar(form.createTopMenu(frame));
         frame.pack();
         frame.setVisible(true);
     }
