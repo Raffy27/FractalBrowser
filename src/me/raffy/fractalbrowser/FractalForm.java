@@ -62,24 +62,38 @@ public class FractalForm {
                 panelFractal.repaint();
             }
         });
+        panelFractal.addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent mouseWheelEvent) {
+                if (cbxFractalType.getSelectedIndex() == 0) {
+                    MandelbrotFractal fractal = (MandelbrotFractal) panelFractal.getController();
+                    fractal.zoom(mouseWheelEvent.getWheelRotation(), mouseWheelEvent.getPoint());
+                    panelFractal.repaint();
+                }
+            }
+        });
     }
 
-    private void setupCommonValues(FractalController controller) {
-        controller.setIterations(sldIterations.getValue());
-    }
     private void setupMandelbrot() {
-        FractalController controller = new MandelbrotFractal();
-        setupCommonValues(controller);
+        FractalController controller = new MandelbrotFractal(
+                MandelbrotFractal.START_RECT,
+                sldIterations.getValue(),
+                sldHue.getValue()
+        );
         panelFractal.setController(controller);
     }
     private void setupTree() {
-        FractalController controller = new TreeFractal();
-        setupCommonValues(controller);
+        FractalController controller = new TreeFractal(
+                sldIterations.getValue(),
+                sldHue.getValue()
+        );
         panelFractal.setController(controller);
     }
     private void setupSierpinski() {
-        FractalController controller = new SierpinskiFractal();
-        setupCommonValues(controller);
+        FractalController controller = new SierpinskiFractal(
+                sldIterations.getValue(),
+                sldHue.getValue()
+        );
         panelFractal.setController(controller);
     }
 

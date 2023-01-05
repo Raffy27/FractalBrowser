@@ -5,7 +5,11 @@ import java.awt.*;
 public abstract class FractalController {
     private int iterations;
     private int hueShift;
-    public abstract void paint(Graphics g);
+
+    public FractalController(int iterations, int hueShift) {
+        this.iterations = iterations;
+        this.hueShift = hueShift;
+    }
 
     public int getIterations() {
         return iterations;
@@ -22,4 +26,6 @@ public abstract class FractalController {
     public void setHueShift(int hueShift) {
         this.hueShift = hueShift;
     }
+
+    public abstract void paint(Graphics g);
 }

@@ -5,8 +5,8 @@ import java.awt.*;
 public class SierpinskiFractal extends FractalController {
     private static final int PADDING = 10;
 
-    public SierpinskiFractal() {
-        super();
+    public SierpinskiFractal(int iterations, int hueShift) {
+        super(iterations, hueShift);
     }
     public void paint(Graphics g) {
         Rectangle bounds = g.getClipBounds();
@@ -18,7 +18,7 @@ public class SierpinskiFractal extends FractalController {
     }
 
     private Color getColorForIteration(int iteration) {
-        float brightness = iteration * .92f / (this.getIterations() / 7f);
+        float brightness = Math.max(1 - iteration * .92f / (this.getIterations() / 7f), .40f);
         float hue = ((267f + this.getHueShift()) / 360) % 360;
         return Color.getHSBColor(hue, .98f, brightness);
     }
