@@ -58,8 +58,6 @@ public class MandelbrotFractal extends FractalController {
     }
 
     public void paint(Graphics g) {
-        //System.out.println("Painting Mandelbrot");
-
         bounds = g.getClipBounds();
         double reStep = dimensions.width / bounds.width;
         double imStep = dimensions.height / bounds.height;

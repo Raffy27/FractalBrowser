@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class SierpinskiFractal extends FractalController {
     private static final int PADDING = 10;
-
+    private static final double ITERATION_FACTOR = 1f / 7;
     public SierpinskiFractal(int iterations, int hueShift) {
         super(iterations, hueShift);
     }
@@ -24,11 +24,11 @@ public class SierpinskiFractal extends FractalController {
     }
 
     private void paintSierpinski(Graphics g, Point a, Point b, Point c, int iteration) {
-        Point midpointAB = new Point((a.x + b.x) / 2, (a.y + b.y) / 2);
-        Point midpointAC = new Point((a.x + c.x) / 2, (a.y + c.y) / 2);
-        Point midpointBC = new Point((c.x + b.x) / 2, (c.y + b.y) / 2);
+        Point midpointAB = new Point((a.x + b.x) / 2 + 1, (a.y + b.y) / 2 + 1);
+        Point midpointAC = new Point((a.x + c.x) / 2 - 1, (a.y + c.y) / 2 + 1);
+        Point midpointBC = new Point((c.x + b.x) / 2, (c.y + b.y) / 2 - 1);
         drawTriangle(g, midpointAB, midpointAC, midpointBC, getColorForIteration(iteration));
-        if (iteration + 1 < this.getIterations() / 7) {
+        if (iteration + 1 < this.getIterations() * ITERATION_FACTOR) {
             paintSierpinski(g, a, midpointAB, midpointAC, iteration + 1);
             paintSierpinski(g, midpointAB, b, midpointBC, iteration + 1);
             paintSierpinski(g, midpointAC, midpointBC, c, iteration + 1);
