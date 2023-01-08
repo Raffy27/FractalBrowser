@@ -6,6 +6,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URI;
@@ -17,78 +18,81 @@ public class FractalForm {
     private JComboBox cbxFractalType;
     private JSlider sldIterations;
     private JSlider sldHue;
-    private JPanel panelMandelbrot;
-    private JPanel panelTree;
     private JSlider sldDelta;
     private JSpinner spnLength;
     private JSlider sldLengthFactor;
     private JPanel panelSpecial;
-    private JPanel panelEmpty;
+    private JSpinner spnReMin;
+    private JSpinner spnReMax;
+    private JSpinner spnImMin;
+    private JSpinner spnImMax;
     private Point dragStart;
     private boolean mouseDown;
 
     public FractalForm() {
         setupMandelbrot();
-        spnLength.setModel(new SpinnerNumberModel(0.0, 0.0, 1000.0, 1.0));
-        spnLength.setValue(200d);
-        cbxFractalType.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent itemEvent) {
-                if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
-                    CardLayout layout = (CardLayout) panelSpecial.getLayout();
-                    switch (cbxFractalType.getSelectedIndex()) {
-                        case 0:
-                            System.out.println("Mandelbrot selected");
-                            setupMandelbrot();
-                            layout.show(panelSpecial, "MandelbrotCard");
-                            panelFractal.repaint();
-                            break;
-                        case 1:
-                            System.out.println("Tree selected");
-                            setupTree();
-                            layout.show(panelSpecial, "TreeCard");
-                            panelFractal.repaint();
-                            break;
-                        case 2:
-                            System.out.println("Sierpinski selected");
-                            setupSierpinski();
-                            layout.show(panelSpecial, "EmptyCard");
-                            panelFractal.repaint();
-                            break;
-                    }
+        spnLength.setModel(new SpinnerNumberModel(200d, 0.0, 1000.0, 1.0));
+        spnReMin.setModel(new SpinnerNumberModel(MandelbrotFractal.START_RECT.getMinX(), -10.0, 10.0, 0.1));
+        spnReMax.setModel(new SpinnerNumberModel(MandelbrotFractal.START_RECT.getMaxX(), -10.0, 10.0, 0.1));
+        spnImMin.setModel(new SpinnerNumberModel(MandelbrotFractal.START_RECT.getMinY(), -10.0, 10.0, 0.1));
+        spnImMax.setModel(new SpinnerNumberModel(MandelbrotFractal.START_RECT.getMaxY(), -10.0, 10.0, 0.1));
+
+        ChangeListener coordsChange = (ChangeEvent event) -> {
+            MandelbrotFractal fractal = (MandelbrotFractal) panelFractal.getController();
+            fractal.setDimensions(new Rectangle2D.Double(
+                    (double) spnReMin.getValue(),
+                    (double) spnImMin.getValue(),
+                    (double) spnReMax.getValue() - (double) spnReMin.getValue(),
+                    (double) spnImMax.getValue() - (double) spnImMin.getValue()
+            ));
+            panelFractal.repaint();
+        };
+        spnReMin.addChangeListener(coordsChange);
+        spnReMax.addChangeListener(coordsChange);
+        spnImMin.addChangeListener(coordsChange);
+        spnImMax.addChangeListener(coordsChange);
+        cbxFractalType.addItemListener(itemEvent -> {
+            if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
+                CardLayout layout = (CardLayout) panelSpecial.getLayout();
+                switch (cbxFractalType.getSelectedIndex()) {
+                    case 0:
+                        System.out.println("Mandelbrot selected");
+                        setupMandelbrot();
+                        layout.show(panelSpecial, "MandelbrotCard");
+                        panelFractal.repaint();
+                        break;
+                    case 1:
+                        System.out.println("Tree selected");
+                        setupTree();
+                        layout.show(panelSpecial, "TreeCard");
+                        panelFractal.repaint();
+                        break;
+                    case 2:
+                        System.out.println("Sierpinski selected");
+                        setupSierpinski();
+                        layout.show(panelSpecial, "EmptyCard");
+                        panelFractal.repaint();
+                        break;
                 }
             }
         });
-        btnPaint.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                panelFractal.repaint();
-            }
+        btnPaint.addActionListener(actionEvent -> panelFractal.repaint());
+        sldIterations.addChangeListener(changeEvent -> {
+            int value = sldIterations.getValue();
+            panelFractal.getController().setIterations(value);
+            panelFractal.repaint();
         });
-        sldIterations.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent changeEvent) {
-                int value = sldIterations.getValue();
-                panelFractal.getController().setIterations(value);
-                panelFractal.repaint();
-            }
+        sldHue.addChangeListener(changeEvent -> {
+            int value = sldHue.getValue();
+            panelFractal.getController().setHueShift(value);
+            panelFractal.repaint();
         });
-        sldHue.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent changeEvent) {
-                int value = sldHue.getValue();
-                panelFractal.getController().setHueShift(value);
+        panelFractal.addMouseWheelListener(mouseWheelEvent -> {
+            if (cbxFractalType.getSelectedIndex() == 0) {
+                MandelbrotFractal fractal = (MandelbrotFractal) panelFractal.getController();
+                fractal.zoom(mouseWheelEvent.getWheelRotation(), mouseWheelEvent.getPoint());
+                updateCoordsSpinners();
                 panelFractal.repaint();
-            }
-        });
-        panelFractal.addMouseWheelListener(new MouseWheelListener() {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent mouseWheelEvent) {
-                if (cbxFractalType.getSelectedIndex() == 0) {
-                    MandelbrotFractal fractal = (MandelbrotFractal) panelFractal.getController();
-                    fractal.zoom(mouseWheelEvent.getWheelRotation(), mouseWheelEvent.getPoint());
-                    panelFractal.repaint();
-                }
             }
         });
         panelFractal.addMouseMotionListener(new MouseMotionAdapter() {
@@ -98,6 +102,7 @@ public class FractalForm {
                 if (mouseDown && cbxFractalType.getSelectedIndex() == 0) {
                     MandelbrotFractal fractal = (MandelbrotFractal) panelFractal.getController();
                     fractal.pan(dragStart, mouseEvent.getPoint());
+                    updateCoordsSpinners();
                     dragStart = mouseEvent.getPoint();
                     panelFractal.repaint();
                 }
@@ -119,33 +124,32 @@ public class FractalForm {
                 panelFractal.setCursor(Cursor.getDefaultCursor());
             }
         });
-        sldDelta.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent changeEvent) {
-                double value = sldDelta.getValue() / 100d;
-                TreeFractal fractal = (TreeFractal) panelFractal.getController();
-                fractal.setDelta(value);
-                panelFractal.repaint();
-            }
+        sldDelta.addChangeListener(changeEvent -> {
+            double value = sldDelta.getValue() / 100d;
+            TreeFractal fractal = (TreeFractal) panelFractal.getController();
+            fractal.setDelta(value);
+            panelFractal.repaint();
         });
-        spnLength.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent changeEvent) {
-                double value = (double) spnLength.getValue();
-                TreeFractal fractal = (TreeFractal) panelFractal.getController();
-                fractal.setLength(value);
-                panelFractal.repaint();
-            }
+        spnLength.addChangeListener(changeEvent -> {
+            double value = (double) spnLength.getValue();
+            TreeFractal fractal = (TreeFractal) panelFractal.getController();
+            fractal.setLength(value);
+            panelFractal.repaint();
         });
-        sldLengthFactor.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent changeEvent) {
-                double value = sldLengthFactor.getValue() / 100d;
-                TreeFractal fractal = (TreeFractal) panelFractal.getController();
-                fractal.setLengthFactor(value);
-                panelFractal.repaint();
-            }
+        sldLengthFactor.addChangeListener(changeEvent -> {
+            double value = sldLengthFactor.getValue() / 100d;
+            TreeFractal fractal = (TreeFractal) panelFractal.getController();
+            fractal.setLengthFactor(value);
+            panelFractal.repaint();
         });
+    }
+
+    private void updateCoordsSpinners() {
+        Rectangle2D.Double dimensions = ((MandelbrotFractal) panelFractal.getController()).getDimensions();
+        spnReMin.setValue(dimensions.getMinX());
+        spnReMax.setValue(dimensions.getMaxX());
+        spnImMin.setValue(dimensions.getMinY());
+        spnImMax.setValue(dimensions.getMaxY());
     }
 
     private void setupMandelbrot() {

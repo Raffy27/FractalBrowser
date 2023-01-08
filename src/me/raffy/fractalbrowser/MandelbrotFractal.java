@@ -92,4 +92,12 @@ public class MandelbrotFractal extends FractalController {
         }
         return i;
     }
+
+    public Rectangle2D.Double getDimensions() {
+        return dimensions;
+    }
+
+    public void setDimensions(Rectangle2D.Double dimensions) {
+        this.dimensions = dimensions;
+    }
 }
