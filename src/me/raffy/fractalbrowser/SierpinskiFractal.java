@@ -18,7 +18,7 @@ public class SierpinskiFractal extends FractalController {
     }
 
     private Color getColorForIteration(int iteration) {
-        float brightness = Math.max(1 - iteration * .92f / (this.getIterations() / 7f), .40f);
+        float brightness = Math.max(1 - iteration * .92f / (float) (this.getIterations() * ITERATION_FACTOR), .40f);
         float hue = ((267f + this.getHueShift()) / 360) % 360;
         return Color.getHSBColor(hue, .98f, brightness);
     }

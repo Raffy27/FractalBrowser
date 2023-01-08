@@ -61,8 +61,8 @@ public class MandelbrotFractal extends FractalController {
         bounds = g.getClipBounds();
         double reStep = dimensions.width / bounds.width;
         double imStep = dimensions.height / bounds.height;
-        for (double re = dimensions.x; re < dimensions.x + dimensions.width; re += reStep) {
-            for (double im = dimensions.y; im < dimensions.y + dimensions.height; im += imStep) {
+        for (double re = dimensions.x; re <= dimensions.x + dimensions.width; re += reStep) {
+            for (double im = dimensions.y; im <= dimensions.y + dimensions.height; im += imStep) {
                 int x = (int) ((re - dimensions.x) / reStep);
                 int y = (int) ((im - dimensions.y) / imStep);
                 int result = diverges(im, re, this.getIterations());

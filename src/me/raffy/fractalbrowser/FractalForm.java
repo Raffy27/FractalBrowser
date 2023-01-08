@@ -17,30 +17,42 @@ public class FractalForm {
     private JComboBox cbxFractalType;
     private JSlider sldIterations;
     private JSlider sldHue;
+    private JPanel panelMandelbrot;
+    private JPanel panelTree;
+    private JSlider sldDelta;
+    private JSpinner spnLength;
+    private JSlider sldLengthFactor;
+    private JPanel panelSpecial;
+    private JPanel panelEmpty;
     private Point dragStart;
     private boolean mouseDown;
 
     public FractalForm() {
         setupMandelbrot();
+        spnLength.setModel(new SpinnerNumberModel(0.0, 0.0, 1000.0, 1.0));
+        spnLength.setValue(200d);
         cbxFractalType.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent itemEvent) {
                 if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
-
+                    CardLayout layout = (CardLayout) panelSpecial.getLayout();
                     switch (cbxFractalType.getSelectedIndex()) {
                         case 0:
                             System.out.println("Mandelbrot selected");
                             setupMandelbrot();
+                            layout.show(panelSpecial, "MandelbrotCard");
                             panelFractal.repaint();
                             break;
                         case 1:
                             System.out.println("Tree selected");
-                            panelFractal.repaint();
                             setupTree();
+                            layout.show(panelSpecial, "TreeCard");
+                            panelFractal.repaint();
                             break;
                         case 2:
                             System.out.println("Sierpinski selected");
                             setupSierpinski();
+                            layout.show(panelSpecial, "EmptyCard");
                             panelFractal.repaint();
                             break;
                     }
@@ -105,6 +117,33 @@ public class FractalForm {
                 super.mouseReleased(mouseEvent);
                 mouseDown = false;
                 panelFractal.setCursor(Cursor.getDefaultCursor());
+            }
+        });
+        sldDelta.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent changeEvent) {
+                double value = sldDelta.getValue() / 100d;
+                TreeFractal fractal = (TreeFractal) panelFractal.getController();
+                fractal.setDelta(value);
+                panelFractal.repaint();
+            }
+        });
+        spnLength.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent changeEvent) {
+                double value = (double) spnLength.getValue();
+                TreeFractal fractal = (TreeFractal) panelFractal.getController();
+                fractal.setLength(value);
+                panelFractal.repaint();
+            }
+        });
+        sldLengthFactor.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent changeEvent) {
+                double value = sldLengthFactor.getValue() / 100d;
+                TreeFractal fractal = (TreeFractal) panelFractal.getController();
+                fractal.setLengthFactor(value);
+                panelFractal.repaint();
             }
         });
     }
