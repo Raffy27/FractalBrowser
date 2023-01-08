@@ -43,7 +43,7 @@ When you find a configuration that you like, you can switch to full-screen mode 
 
 ## Releases
 
-You can find the latest release on the Releases page.
+You can find the latest release on the [Releases](https://github.com/Raffy27/FractalBrowser/releases) page.
 
 ## Known Issues
 
@@ -62,4 +62,4 @@ More fractals can always be added.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE]() file for details. For the dependencies, all rights belong to their respective owners. These should be used according to their respective licenses.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/Raffy27/FractalBrowser/blob/main/LICENSE) file for details. For the dependencies, all rights belong to their respective owners. These should be used according to their respective licenses.
