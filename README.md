@@ -13,7 +13,7 @@ This project features a minimalistic Java GUI application for rendering images o
    This is a version of the Pythagorean tree, which is a plane fractal constructed from squares. In this instance, it is visualized with diverging lines.
 3. Sierpiński triangle
 
-   > It is a [fractal](https://en.wikipedia.org/wiki/Fractal_curve "Fractal curve") [attractive fixed set](https://en.wikipedia.org/wiki/Attractive_fixed_set "Attractive fixed set") with the overall shape of an [equilateral triangle](https://en.wikipedia.org/wiki/Equilateral_triangle "Equilateral triangle"), subdivided [recursively](https://en.wikipedia.org/wiki/Recursion "Recursion") into smaller equilateral triangles.
+   > It is a fractal attractive fixed set with the overall shape of an equilateral triangle, subdivided recursively into smaller equilateral triangles.
    >
 
    In this version, it is drawn as a sequence of internal triangles.
