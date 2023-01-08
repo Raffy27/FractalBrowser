@@ -161,11 +161,14 @@ public class FractalForm {
         panelFractal.setController(controller);
     }
     private void setupTree() {
-        FractalController controller = new TreeFractal(
+        TreeFractal fractal = new TreeFractal(
                 sldIterations.getValue(),
                 sldHue.getValue()
         );
-        panelFractal.setController(controller);
+        fractal.setDelta(sldDelta.getValue() / 100d);
+        fractal.setLength((double) spnLength.getValue());
+        fractal.setLengthFactor(sldLengthFactor.getValue() / 100d);
+        panelFractal.setController(fractal);
     }
     private void setupSierpinski() {
         FractalController controller = new SierpinskiFractal(
@@ -220,7 +223,18 @@ public class FractalForm {
         howToUseItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JOptionPane.showMessageDialog(null, "You're a smart boi, figure it out");
+                JOptionPane.showMessageDialog(null,
+                "All fractals have the two basic options: Iterations and Hue Shift. Iterations specifies the\n" +
+                    "maximum number of iterations for each fractal (the higher, the better the drawing will be,\n" +
+                    "but keep in mind that quality comes with the cost of performance). Hue Shift plays with the\n" +
+                    "colors, and helps you see certain parts of the fractal better.\n\n" +
+                    "There are also fractal-specific options. The Mandelbrot fractal has an interactive coordinate\n" +
+                    "system (you can also scroll to zoom and drag to pan around). The tree fractal has inputs for\n" +
+                    "the angle difference between branches (Delta), the length of the longest branch (Length), and\n" +
+                    "ratio of subsequent branch lengths (Length Factor).\n\n" +
+                    "When you find a configuration that you like, you can use the File >> Export Image menu to save\n" +
+                    "it as a PNG. You may also resize the form to get a better resolution image. Have fun! :D"
+                );
             }
         });
         helpMenu.add(howToUseItem);
@@ -239,7 +253,7 @@ public class FractalForm {
         aboutItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JOptionPane.showMessageDialog(null, "Made with ♡ by Raffy");
+                JOptionPane.showMessageDialog(null, "Made with ♡ by Raffy\n2023. jan. 8.");
             }
         });
         helpMenu.add(aboutItem);
